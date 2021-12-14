@@ -1,0 +1,48 @@
+# 'docker-compose up' will run this.
+version: '3'
+
+# This section describes the various containers (services)
+services:
+  rabbitmq-container:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    # These ports are exposed on the host; 'hostport:containerport'.
+    # You could connect to this server from outside with the *host's*
+    # DNS name or IP address and port 5672 (the left-hand side of the
+    # colon).
+    ports:
+      # The standard AMQP protocol port
+      - 5672:5672
+      # HTTP management UI
+      - 15672:15672
+    # Run this container on a private network for this application.
+    # This is necessary for magic Docker DNS to work: other containers
+    # also running on this network will see a host name "rabbitmq"
+    # (the name of this section) and the internal port 5672, even though
+    # that's not explicitly published above.
+    networks:
+      - network
+
+  books-service:
+    image: book-platform:latest
+    # If needed, Docker Compose will automatically run consumer/Dockerfile.
+    build: book-platform/
+    container_name: bank-platform-container
+    ports:
+      - 8082:8082
+    networks:
+      - network
+
+  review-service:
+    image: review-platform:latest
+    build: review-platform/
+    container_name: review-platform-container
+    ports:
+      - 8081:8081
+    networks:
+      - network
+
+networks:
+  # Declare our private network.  We must declare one for the magic
+  # Docker DNS to work, but otherwise its default settings are fine.
+  network: { }
