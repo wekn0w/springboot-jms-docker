@@ -17,7 +17,7 @@ import web.domain.Permission;
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
     @Autowired
     public SecurityConfig(UserDetailsService service) {
