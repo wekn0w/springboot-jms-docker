@@ -5,7 +5,7 @@ version: '3'
 services:
   rabbitmq-container:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+    container_name: rabbitmq-container
     # These ports are exposed on the host; 'hostport:containerport'.
     # You could connect to this server from outside with the *host's*
     # DNS name or IP address and port 5672 (the left-hand side of the
@@ -27,9 +27,15 @@ services:
     image: book-platform:latest
     # If needed, Docker Compose will automatically run consumer/Dockerfile.
     build: book-platform/
-    container_name: bank-platform-container
+    container_name: book-platform-container
     ports:
       - 8082:8082
+    # This allows service to find out the IP address of the machine
+    # where RabbitMQ is running
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq-container
+    depends_on:
+          - rabbitmq-container
     networks:
       - network
 
@@ -39,6 +45,10 @@ services:
     container_name: review-platform-container
     ports:
       - 8081:8081
+    environment:
+      - SPRING_RABBITMQ_HOST=rabbitmq-container
+    depends_on:
+      - rabbitmq-container
     networks:
       - network
 

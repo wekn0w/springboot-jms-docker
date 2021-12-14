@@ -1,6 +1,7 @@
 package web.amqp;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Service;
 import web.domain.MessageRecord;
 import web.dto.CommentMessage;
 import web.dto.ReviewDto;
@@ -8,6 +9,7 @@ import web.repo.MessageRepo;
 import web.service.ReviewService;
 import web.utils.MQConsts;
 
+@Service
 public class ReviewSaveMessageListenerImpl implements ReviewSaveMessageListener {
 
     private final MessageRepo messageRepository;
